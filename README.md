@@ -31,7 +31,7 @@ Discord bot with a `/reset-counter` command, that counts the number of days sinc
 
     Where each `PermissionObject` looks like:
 
-    ```json
+    ```js
     { 
         guild: "<id of guild where permission is to apply>",
         permissions: [
