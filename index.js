@@ -2,6 +2,7 @@ const {Intents, Client, Collection } = require('discord.js');
 const counter = require('./counter');
 const logger = require('./log');
 const { discordToken } = require('./auth.pii');
+const perms = require('./perms.pii');
 
 function fail(err) { throw err; }
 const log = logger.new('index');
@@ -33,12 +34,6 @@ async function main() {
             const cmd = commands[i];
             const name = cmd.data.name;
             client.commands.set(name, cmd);
-            appCommands.filter(appCmd => appCmd.name === name).map(appCmd => appCmd.id).forEach(async appCmdId => {
-                const appCmd = await client.application.commands.fetch(appCmdId);
-                for(perm of cmd.permissions) {
-                    await appCmd.permissions.add(perm);
-                }
-            });
         }
     
         log('commands registered');
@@ -47,6 +42,25 @@ async function main() {
     client.on('interactionCreate', async interaction => {
         if(!interaction.isCommand()) {
             return;
+        }
+
+        if(perms[interaction.guildId]) {
+            let allowedRoles = perms[interaction.guildId];
+            let found = false;
+            let hasRoles = interaction.member.roles.cache ?? interaction.member.roles;
+            for(let role of allowedRoles) {
+                if(hasRoles.some(r => r.name === role)) {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                return interaction.reply(
+`Only those with the following roles can reset the counter in this server.
+
+${allowedRoles.join(', ')}`
+                );
+            }
         }
 
         const cmd = client.commands.get(interaction.commandName);

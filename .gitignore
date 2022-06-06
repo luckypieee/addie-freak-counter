@@ -1,3 +1,4 @@
 *.pii.js
 node_modules
 package-lock.json
+counters.json

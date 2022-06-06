@@ -19,30 +19,15 @@ Discord bot with a `/reset-counter` command, that counts the number of days sinc
     };
     ```
 
-3. Fill out `counter.pii.js` with the following information:
+3. Fill out `perms.pii.js` with the following information:
 
     ```js
     module.exports = {
-        permissions: [
-            PermissionObjects...
-        ]
+        'guildID': ['server-roles', 'allowed-to', 'reset-counter']
     };
     ```
 
-    Where each `PermissionObject` looks like:
-
-    ```js
-    { 
-        guild: "<id of guild where permission is to apply>",
-        permissions: [
-            {
-                id: "<id of role or user to allow>",
-                type: "<either the string 'ROLE' or the string 'USER'>",
-                permission: true,
-            }
-        ],
-    }
-    ```
+    Any guild specified in perms.pii will have the list of allowed roles as an allowlist -- anyone else will be disallowed from using the bot. Any guild not specified in perms.pii will by default allow everyone to use the bot.
 
 4. Run `node register.js` to register bot commands on Discord (one-time).
 
